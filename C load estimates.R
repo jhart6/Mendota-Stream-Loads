@@ -21,7 +21,7 @@
 
 #Import data from local drive (CSV's are also available in Github repository)
 setwd("~/Dropbox/Mendota Summer 16/GLM Stream Files/") #JAH
-stream<-read.csv("Yahara.csv") #JAH
+stream<-read.csv("Pheasant Branch.csv") #JAH
 
 ####1: Calculate Loads for Days with Discrete Data####
 #create OC variable = POC + DOC (mg/L)
@@ -45,6 +45,9 @@ log_load_estimate = log(load_estimate)
 
 model<-lm(log_load_estimate~poly(log_Q_with_load,2),raw=TRUE)
 summary(model)
+
+model2<-lm(log_load_estimate~log_Q_with_load)
+summary(model2)
 
 #check model residuals and normality
 plot(resid(model))
