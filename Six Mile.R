@@ -102,8 +102,8 @@ doc_load_over_Q<-(sixmile_doc_kg_day/Q_m3_day)
 sixmile_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
 ####5: Export GLM Suitable CSV####
-sixmile<-data.frame(stream$DATETIME,Q_m3_day,sixmile_poc_mmol,sixmile_doc_mmol)
-colnames(sixmile)<-c("Time","FLOW","OGM_poc","OGM_doc")
+sixmile<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,sixmile_poc_mmol,sixmile_doc_mmol)
+colnames(sixmile)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
 library("xlxs")
 write.csv(sixmile,file='Mendota_sixmile.csv',row.names=FALSE)
