@@ -102,7 +102,7 @@ doc_load_over_Q<-(pb_doc_kg_day/Q_m3_day)
 pb_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
 ####5: Export GLM Suitable CSV####
-pb<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_day,pb_poc_mmol,pb_doc_mmol)
+pb<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,pb_poc_mmol,pb_doc_mmol)
 colnames(pb)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
 install.packages('xlsx')
