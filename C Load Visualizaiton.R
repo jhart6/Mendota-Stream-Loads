@@ -1,24 +1,33 @@
 #Stream C Load Comparison - Mendota Inflows
-  #Run C load estimates script first to generate stream specific dataframes
+  #Run stream specific load estimate scripts first to generate CSV's to load into this script
 
-View(pheasantbranch)
-View(dorn)
-View(sixmile)
-View(yahara)
+setwd('~/Dropbox/Mendota Summer 16/GLM Stream Files/')
+pb<-read.csv("Mendota_pheasant.csv")
+dorn<-read.csv("Mendota_dorn.csv")
+sixmile<-read.csv("Mendota_sixmile.csv")
+yahara<-read.csv("Mendota_yahara.csv")
+
 
 julian<-seq(92,320,1)
 xlab=expression("Julian")
-ylab=expression("OC Load (kg/day)")
+ylab_poc=expression("POC (mmol/m3)")
+ylab_doc=expression("DOC (mmol/m3)")
 
 quartz()
 par(mar=c(5,5,2,1))
-par(mfrow=c(2,2))
-plot(julian,pheasantbranch$C_LOAD,type='l',xlab=xlab,ylab=ylab,main=expression("Pheasant Branch"))
-plot(julian,dorn$C_LOAD,type='l',col='red',xlab=xlab,ylab=ylab,main=expression("Dorn"))
-plot(julian,sixmile$C_LOAD,type='l',col='green',xlab=xlab,ylab=ylab,main=expression("Six Mile"))
-plot(julian,yahara$C_LOAD,type='l',col='blue',xlab=xlab,ylab=ylab,main=expression("Yahara"))
+par(mfrow=c(4,2))
 
+plot(julian,pb$OGM_poc,type='l')
+plot(julian,pb$OGM_doc,type='l')
 
+plot(julian,dorn$OGM_poc,type='l')
+plot(julian,dorn$OGM_doc,type='l')
+
+plot(julian,sixmile$OGM_poc,type='l')
+plot(julian,sixmile$OGM_doc,type='l')
+
+plot(julian,yahara$OGM_poc,type='l')
+plot(julian,yahara$OGM_doc,type='l')
 
 
 
