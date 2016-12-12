@@ -12,7 +12,7 @@
   #3: Use regression model to fill in days with missing C loads
 
 #UNITS by Data Column:
-  #DISCHARGE: ft^3/sec - do we need to change this? Or need some conversion?
+  #DISCHARGE: ft^3/sec 
   #POC: mg/L
   #DOC: mg/L
   #DIC: mg/L
@@ -24,12 +24,8 @@ setwd("~/Dropbox/Mendota Summer 16/GLM Stream Files/") #JAH
 stream<-read.csv("Pheasant Branch.csv") #JAH
 
 ####1: Calculate Loads for Days with Discrete Data####
-#create OC variable = POC + DOC (mg/L)
-OC<-stream$POC+stream$DOC
-stream<-cbind(stream,OC)
-
 #calculate loads
-load<-stream$DISCHARGE*stream$OC*0.0864
+load<-stream$DISCHARGE*stream$POC*0.0864
 stream<-cbind(stream,load)
 
 #isolate this load dataset
@@ -43,26 +39,46 @@ Q_with_load<-as.vector(stream$DISCHARGE[which(is.na(stream$load)==F)])
 log_Q_with_load = log(Q_with_load)
 log_load_estimate = log(load_estimate)
 
-model<-lm(log_load_estimate~poly(log_Q_with_load,2),raw=TRUE)
-summary(model)
+poly_model<-lm(log_load_estimate~poly(log_Q_with_load,2),raw=TRUE)
+summary(poly_model)
 
-model2<-lm(log_load_estimate~log_Q_with_load)
-summary(model2)
+linear_model<-lm(log_load_estimate~log_Q_with_load)
+summary(linear_model)
 
 #check model residuals and normality
-plot(resid(model))
-shapiro.test(resid(model))
+plot(resid(poly_model))
+shapiro.test(resid(poly_model))
+
+plot(resid(linear_model))
+shapiro.test(resid(linear_model))
+
+#compare the two models
+mod_compare<-anova(poly_model,linear_model)
+summary(mod_compare)
+
+AIC(poly_model)
+AIC(linear_model) 
 
 #plotting the model output
 plot(log_Q_with_load,log_load_estimate,pch=16)
-points(log_Q_with_load,predict(model),col='red',pch=16)
+points(log_Q_with_load,predict(linear_model),col='red',pch=16)
+points(log_Q_with_load,predict(poly_model),col='red',pch=16)
 legend('topleft',col=c('black','red'),c('Observed','Modeled'),pch=c(16,16))
 
 ####3: Use regression model to fill in days with missing C loads####
 log_q<-log(stream$DISCHARGE)
 
+#modeled loads in kg/day using linear model
+modeled_loads_linear<-exp(linear_model$coefficients[1]+linear_model$coefficients[2]*log_q)
+
 #modeled loads in kg/day using 2nd order polynomial model
-modeled_loads<-exp(model$coefficients[1]+model$coefficients[2]*log_q+model$coefficients[3]*(log_q)^2)
+modeled_loads_poly<-exp(model$coefficients[1]+model$coefficients[2]*log_q+model$coefficients[3]*(log_q)^2)
+
+
+
+
+
+
 
 #Save output as stream specific datafile
 #Pheasant Branch Output
