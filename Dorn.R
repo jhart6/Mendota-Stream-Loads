@@ -86,15 +86,18 @@ dorn_doc_kg_day<-modeled_loads_poly
 
 ####4: Convert Q and Solute Units for GLM####
 cf_per_cm = 0.0283168 
-carbon_kg_to_mmol=83263.95
+sec_per_day = 86400
+carbon_kg_to_mmol = 83263.95
 
 #poc
-Q_m3_day<-stream$DISCHARGE*cf_per_cm
+Q_m3_s<-stream$DISCHARGE*cf_per_cm
+Q_m3_day<-Q_m3_s*sec_per_day
 poc_load_over_Q<-(dorn_poc_kg_day/Q_m3_day)
 dorn_poc_mmol<-(poc_load_over_Q*carbon_kg_to_mmol)
 
 #doc
-Q_m3_day<-stream$DISCHARGE*cf_per_cm
+Q_m3_s<-stream$DISCHARGE*cf_per_cm
+Q_m3_day<-Q_m3_s*sec_per_day
 doc_load_over_Q<-(dorn_doc_kg_day/Q_m3_day)
 dorn_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
