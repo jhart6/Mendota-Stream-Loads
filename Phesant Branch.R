@@ -1,6 +1,5 @@
-#Script to develop C load estimates to Lake Mendota from 4 streams:
-  #Pheasant Branch, Dorn, Sixmile Creek, Yahara
-  #12/2/16
+#Script to develop C load estimates to Lake Mendota from Pheasant Branch
+#12/12/16
   
 #Methods based on Lathrop et al. 1998
   #1: Calculate loads for days where C measurements were collected
@@ -27,6 +26,7 @@ stream<-read.csv("Pheasant Branch.csv") #JAH
 
 ####1: Calculate Loads for Days with Discrete Data####
 #calculate loads
+load<-stream$DISCHARGE*stream$POC*0.0864
 load<-stream$DISCHARGE*stream$DOC*0.0864
 stream<-cbind(stream,load)
 
@@ -61,7 +61,7 @@ summary(mod_compare)
 AIC(poly_model)
 AIC(linear_model) 
 
-#pb[poc] = linear model
+#pb[poc] = poly model
 #pb[doc] = linear model
 
 #plotting the model output
@@ -77,10 +77,10 @@ log_q<-log(stream$DISCHARGE)
 modeled_loads_linear<-exp(linear_model$coefficients[1]+linear_model$coefficients[2]*log_q)
 
 #modeled loads in kg/day using 2nd order polynomial model
-modeled_loads_poly<-exp(model$coefficients[1]+model$coefficients[2]*log_q+model$coefficients[3]*(log_q)^2)
+modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*log_q+poly_model$coefficients[3]*(log_q)^2)
 
 #Creating solute specific vector names for posterity
-pb_poc_kg_day<-modeled_loads_linear
+pb_poc_kg_day<-modeled_loads_poly
 pb_doc_kg_day<-modeled_loads_linear
   
   
@@ -99,8 +99,8 @@ doc_load_over_Q<-(pb_doc_kg_day/Q_m3_day)
 pb_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
 ####5: Export GLM Suitable CSV####
-pb<-data.frame(stream$DATETIME,Q_m3_day,pb_poc_mmol,pb_doc_mmol)
-colnames(pb)<-c("Time","FLOW","OGM_poc","OGM_doc")
+pb<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_day,pb_poc_mmol,pb_doc_mmol)
+colnames(pb)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
-library("xlxs")
+install.packages('xlsx')
 write.csv(pb,file='Mendota_pheasant.csv',row.names=FALSE)
