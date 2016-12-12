@@ -102,8 +102,8 @@ doc_load_over_Q<-(dorn_doc_kg_day/Q_m3_day)
 dorn_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
 ####5: Export GLM Suitable CSV####
-dorn<-data.frame(stream$DATETIME,Q_m3_day,dorn_poc_mmol,dorn_doc_mmol)
-colnames(dorn)<-c("Time","FLOW","OGM_poc","OGM_doc")
+dorn<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,dorn_poc_mmol,dorn_doc_mmol)
+colnames(dorn)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
 library("xlxs")
 write.csv(dorn,file='Mendota_dorn.csv',row.names=FALSE)

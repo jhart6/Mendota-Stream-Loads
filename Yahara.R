@@ -102,8 +102,8 @@ doc_load_over_Q<-(yahara_doc_kg_day/Q_m3_day)
 yahara_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
 ####5: Export GLM Suitable CSV####
-yahara<-data.frame(stream$DATETIME,Q_m3_day,yahara_poc_mmol,yahara_doc_mmol)
-colnames(yahara)<-c("Time","FLOW","OGM_poc","OGM_doc")
+yahara<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,yahara_poc_mmol,yahara_doc_mmol)
+colnames(yahara)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
 library("xlxs")
 write.csv(yahara,file='Mendota_yahara.csv',row.names=FALSE)
