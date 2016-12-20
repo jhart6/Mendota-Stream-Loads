@@ -25,9 +25,10 @@ setwd("~/Dropbox/Mendota Summer 16/GLM Stream Files/") #JAH
 stream<-read.csv("Pheasant Branch.csv") #JAH
 
 ####1: Calculate Loads for Days with Discrete Data####
-#calculate loads
-load<-stream$DISCHARGE*stream$POC*0.0864
-load<-stream$DISCHARGE*stream$DOC*0.0864
+#calculate loads in kg/day
+load_in_kg_day = 0.0864
+load<-stream$DISCHARGE*stream$POC*load_in_kg_day
+load<-stream$DISCHARGE*stream$DOC*load_in_kg_day
 stream<-cbind(stream,load)
 
 #isolate this load dataset
@@ -46,6 +47,7 @@ summary(poly_model)
 
 linear_model<-lm(log_load_estimate~log_Q_with_load)
 summary(linear_model)
+
 
 #check model residuals and normality
 plot(resid(poly_model))
@@ -67,7 +69,7 @@ AIC(linear_model)
 #plotting the model output
 plot(log_Q_with_load,log_load_estimate,pch=16)
 points(log_Q_with_load,predict(linear_model),col='red',pch=16)
-points(log_Q_with_load,predict(poly_model),col='red',pch=16)
+points(log_Q_with_load,predict(poly_model),col='blue',pch=16)
 legend('topleft',col=c('black','red'),c('Observed','Modeled'),pch=c(16,16))
 
 ####3: Use regression model to fill in days with missing C loads####

@@ -25,9 +25,10 @@ setwd("~/Dropbox/Mendota Summer 16/GLM Stream Files/") #JAH
 stream<-read.csv("Dorn.csv") #JAH
 
 ####1: Calculate Loads for Days with Discrete Data####
-#calculate loads
-load<-stream$DISCHARGE*stream$POC*0.0864
-load<-stream$DISCHARGE*stream$DOC*0.0864
+#calculate loads in kg/day
+load_in_kg_day = 0.0864
+load<-stream$DISCHARGE*stream$POC*load_in_kg_day
+load<-stream$DISCHARGE*stream$DOC*load_in_kg_day
 stream<-cbind(stream,load)
 
 #isolate this load dataset
