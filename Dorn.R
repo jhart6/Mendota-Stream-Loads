@@ -63,7 +63,7 @@ AIC(poly_model)
 AIC(linear_model) 
 
 #dorn[poc] = linear model
-#dorn[doc] = poly model
+#dorn[doc] = linear model
 
 #plotting the model output
 plot(log_Q_with_load,log_load_estimate,pch=16)
@@ -82,7 +82,7 @@ modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*lo
 
 #Creating solute specific vector names for posterity
 dorn_poc_kg_day<-modeled_loads_linear
-dorn_doc_kg_day<-modeled_loads_poly
+dorn_doc_kg_day<-modeled_loads_linear
 
 
 ####4: Convert Q and Solute Units for GLM####
@@ -106,5 +106,7 @@ dorn_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 dorn<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,dorn_poc_mmol,dorn_doc_mmol)
 colnames(dorn)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
-library("xlxs")
-write.csv(dorn,file='Mendota_dorn.csv',row.names=FALSE)
+dorn<-data.frame(stream$DATETIME,dorn_doc_mmol)
+
+library(xlxs)
+write.csv(dorn,file='dorn_new_doc.csv',row.names=FALSE)
