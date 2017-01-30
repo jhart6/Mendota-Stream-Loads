@@ -63,7 +63,7 @@ summary(mod_compare)
 AIC(poly_model)
 AIC(linear_model) 
 
-#pb[poc] = poly model
+#pb[poc] = linear model
 #pb[doc] = linear model
 
 #plotting the model output
@@ -82,7 +82,7 @@ modeled_loads_linear<-exp(linear_model$coefficients[1]+linear_model$coefficients
 modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*log_q+poly_model$coefficients[3]*(log_q)^2)
 
 #Creating solute specific vector names for posterity
-pb_poc_kg_day<-modeled_loads_poly
+pb_poc_kg_day<-modeled_loads_linear
 pb_doc_kg_day<-modeled_loads_linear
   
   
@@ -107,5 +107,8 @@ pb_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 pb<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,pb_poc_mmol,pb_doc_mmol)
 colnames(pb)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
+pb<-data.frame(stream$DATETIME,pb_poc_mmol)
+
 install.packages('xlsx')
-write.csv(pb,file='Mendota_pheasant.csv',row.names=FALSE)
+library(xlsx)
+write.csv(pb,file='pheasant_new_poc.csv',row.names=FALSE)
