@@ -29,6 +29,7 @@ stream<-read.csv("Dorn.csv") #JAH
 load_in_kg_day = 0.0864
 load<-stream$DISCHARGE*stream$POC*load_in_kg_day
 load<-stream$DISCHARGE*stream$DOC*load_in_kg_day
+load<-stream$DISCHARGE*stream$DIC*load_in_kg_day
 stream<-cbind(stream,load)
 
 #isolate this load dataset
@@ -64,6 +65,7 @@ AIC(linear_model)
 
 #dorn[poc] = linear model
 #dorn[doc] = linear model
+#dorn[dic] = linear model
 
 #plotting the model output
 plot(log_Q_with_load,log_load_estimate,pch=16)
@@ -83,6 +85,7 @@ modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*lo
 #Creating solute specific vector names for posterity
 dorn_poc_kg_day<-modeled_loads_linear
 dorn_doc_kg_day<-modeled_loads_linear
+dorn_dic_kg_day<-modeled_loads_linear
 
 
 ####4: Convert Q and Solute Units for GLM####
@@ -102,11 +105,18 @@ Q_m3_day<-Q_m3_s*sec_per_day
 doc_load_over_Q<-(dorn_doc_kg_day/Q_m3_day)
 dorn_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
+#dic
+Q_m3_s<-stream$DISCHARGE*cf_per_cm
+Q_m3_day<-Q_m3_s*sec_per_day
+dic_load_over_Q<-(dorn_dic_kg_day/Q_m3_day)
+dorn_dic_mmol<-(dic_load_over_Q*carbon_kg_to_mmol)
+
 ####5: Export GLM Suitable CSV####
 dorn<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,dorn_poc_mmol,dorn_doc_mmol)
 colnames(dorn)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
 dorn<-data.frame(stream$DATETIME,dorn_doc_mmol)
+dorn<-data.frame(stream$DATETIME,dorn_dic_mmol)
 
 library(xlxs)
-write.csv(dorn,file='dorn_new_doc.csv',row.names=FALSE)
+write.csv(dorn,file='dorn_dic.csv',row.names=FALSE)

@@ -29,6 +29,7 @@ stream<-read.csv("Yahara.csv") #JAH
 load_in_kg_day = 0.0864
 load<-stream$DISCHARGE*stream$POC*load_in_kg_day
 load<-stream$DISCHARGE*stream$DOC*load_in_kg_day
+load<-stream$DISCHARGE*stream$DIC*load_in_kg_day
 stream<-cbind(stream,load)
 
 #isolate this load dataset
@@ -83,6 +84,7 @@ modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*lo
 #Creating solute specific vector names for posterity
 yahara_poc_kg_day<-modeled_loads_linear
 yahara_doc_kg_day<-modeled_loads_linear
+yahara_dic_kg_day<-modeled_loads_linear
 
 
 ####4: Convert Q and Solute Units for GLM####
@@ -102,9 +104,17 @@ Q_m3_day<-Q_m3_s*sec_per_day
 doc_load_over_Q<-(yahara_doc_kg_day/Q_m3_day)
 yahara_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
+#dic
+Q_m3_s<-stream$DISCHARGE*cf_per_cm
+Q_m3_day<-Q_m3_s*sec_per_day
+dic_load_over_Q<-(yahara_dic_kg_day/Q_m3_day)
+yahara_dic_mmol<-(dic_load_over_Q*carbon_kg_to_mmol)
+
 ####5: Export GLM Suitable CSV####
 yahara<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,yahara_poc_mmol,yahara_doc_mmol)
 colnames(yahara)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
+yahara<-data.frame(stream$DATETIME,yahara_dic_mmol)
+
 library("xlxs")
-write.csv(yahara,file='Mendota_yahara.csv',row.names=FALSE)
+write.csv(yahara,file='yahara_dic.csv',row.names=FALSE)

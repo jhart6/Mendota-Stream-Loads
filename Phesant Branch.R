@@ -29,6 +29,7 @@ stream<-read.csv("Pheasant Branch.csv") #JAH
 load_in_kg_day = 0.0864
 load<-stream$DISCHARGE*stream$POC*load_in_kg_day
 load<-stream$DISCHARGE*stream$DOC*load_in_kg_day
+load<-stream$DISCHARGE*stream$DIC*load_in_kg_day
 stream<-cbind(stream,load)
 
 #isolate this load dataset
@@ -65,6 +66,7 @@ AIC(linear_model)
 
 #pb[poc] = linear model
 #pb[doc] = linear model
+#pb[dic] = linear model
 
 #plotting the model output
 plot(log_Q_with_load,log_load_estimate,pch=16)
@@ -84,6 +86,7 @@ modeled_loads_poly<-exp(poly_model$coefficients[1]+poly_model$coefficients[2]*lo
 #Creating solute specific vector names for posterity
 pb_poc_kg_day<-modeled_loads_linear
 pb_doc_kg_day<-modeled_loads_linear
+pb_dic_kg_day<-modeled_loads_linear
   
   
 ####4: Convert Q and Solute Units for GLM####
@@ -103,12 +106,18 @@ Q_m3_day<-Q_m3_s*sec_per_day
 doc_load_over_Q<-(pb_doc_kg_day/Q_m3_day)
 pb_doc_mmol<-(doc_load_over_Q*carbon_kg_to_mmol)
 
+#dic
+Q_m3_s<-stream$DISCHARGE*cf_per_cm
+Q_m3_day<-Q_m3_s*sec_per_day
+dic_load_over_Q<-(pb_dic_kg_day/Q_m3_day)
+pb_dic_mmol<-(dic_load_over_Q*carbon_kg_to_mmol)
+
 ####5: Export GLM Suitable CSV####
 pb<-data.frame(stream$DATETIME,stream$TEMP,Q_m3_s,pb_poc_mmol,pb_doc_mmol)
 colnames(pb)<-c("Time","TEMP","FLOW","OGM_poc","OGM_doc")
 
-pb<-data.frame(stream$DATETIME,pb_poc_mmol)
+pb<-data.frame(stream$DATETIME,pb_dic_mmol)
 
 install.packages('xlsx')
 library(xlsx)
-write.csv(pb,file='pheasant_new_poc.csv',row.names=FALSE)
+write.csv(pb,file='pheasant_dic.csv',row.names=FALSE)
