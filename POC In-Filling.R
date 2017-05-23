@@ -27,7 +27,7 @@ plot(resid(linear_model))
 plot(log_discharge,log_load,pch=16)
 points(log_discharge,predict(linear_model),col='red',pch=16)
 
-#Fill in days with no DIC load data
+#Fill in days with no POC load data
 log_all_discharge <- log10(stream$DISCHARGE)
 
 log_modeled_loads <- linear_model$coefficients[1] + linear_model$coefficients[2]*log_all_discharge
